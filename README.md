@@ -36,6 +36,7 @@ It takes the sample from each channel per revolution and rotates at the rate of 
 <img width="672" height="448" alt="image" src="https://github.com/user-attachments/assets/05600b28-ba54-4cd4-9ff4-f088865e85ae" />
 
 ### Result
+To Study of TDM pulse amplitude modulation/ demodulation with transmitter block (clock) and channel identification information linked directly to the receivers is verified.
 
 
 
