@@ -35,6 +35,41 @@ It takes the sample from each channel per revolution and rotates at the rate of 
 
 <img width="672" height="448" alt="image" src="https://github.com/user-attachments/assets/05600b28-ba54-4cd4-9ff4-f088865e85ae" />
 
+### Program
+```
+Fs = 56300;
+t = 0:1/Fs:0.02;
+m1 = sin(2*%pi200t); m2 = sin(2*%pi300t); m3 = sin(2*%pi400t); m4 = sin(2*%pi500t); m5 = sin(2*%pi600t); m6 = sin(2*%pi700t);
+
+c1 = 3000; c2 = 6000; c3 = 9000; c4 = 12000; c5 = 15000; c6 = 18000;
+
+carrier1 = cos(2*%pic1t); carrier2 = cos(2*%pic2t); carrier3 = cos(2*%pic3t); carrier4 = cos(2*%pic4t); carrier5 = cos(2*%pic5t); carrier6 = cos(2*%pic6t);
+
+s1 = m1 .* carrier1; s2 = m2 .* carrier2; s3 = m3 .* carrier3; s4 = m4 .* carrier4; s5 = m5 .* carrier5; s6 = m6 .* carrier6;
+
+s_total = s1 + s2 + s3 + s4 + s5 + s6;
+
+// Demultiplex: multiply by carriers to shift each band back to baseband r1 = s_total .* carrier1; r2 = s_total .* carrier2; r3 = s_total .* carrier3; r4 = s_total .* carrier4; r5 = s_total .* carrier5; r6 = s_total .* carrier6;
+
+// Simple FFT-based ideal low-pass filter (avoids butter/toolbox issues) function y = ideal_lowpass_fft(x, Fs, fc) N = length(x); X = fft(x); f = Fs*(0:N-1)/N; mask = (f <= fc) | (f >= Fs-fc); Y = X .* mask; y = real(ifft(Y)); endfunction
+
+fc = 1000; dm1 = ideal_lowpass_fft(r1, Fs, fc); dm2 = ideal_lowpass_fft(r2, Fs, fc); dm3 = ideal_lowpass_fft(r3, Fs, fc); dm4 = ideal_lowpass_fft(r4, Fs, fc); dm5 = ideal_lowpass_fft(r5, Fs, fc); dm6 = ideal_lowpass_fft(r6, Fs, fc);
+
+figure(1); subplot(3,2,1); plot(t,m1); title("Message Signal 1"); subplot(3,2,2); plot(t,m2); title("Message Signal 2"); subplot(3,2,3); plot(t,m3); title("Message Signal 3"); subplot(3,2,4); plot(t,m4); title("Message Signal 4"); subplot(3,2,5); plot(t,m5); title("Message Signal 5"); subplot(3,2,6); plot(t,m6); title("Message Signal 6");
+
+figure(2); plot(t, s_total); title("Multiplexed FDM Signal");
+
+figure(3); subplot(3,2,1); plot(t,dm1); title("Recovered Signal 1"); subplot(3,2,2); plot(t,dm2); title("Recovered Signal 2"); subplot(3,2,3); plot(t,dm3); title("Recovered Signal 3"); subplot(3,2,4); plot(t,dm4); title("Recovered Signal 4"); subplot(3,2,5); plot(t,dm5); title("Recovered Signal 5"); subplot(3,2,6); plot(t,dm6); title("Recovered Signal 6");
+```
+### Output
+
+<img width="757" height="727" alt="image" src="https://github.com/user-attachments/assets/c6b439d1-6a6f-4f0d-917a-c1cca85648fe" />
+<img width="759" height="722" alt="image" src="https://github.com/user-attachments/assets/6d866f70-839b-4d76-8f6e-4bd909e8ea08" />
+<img width="761" height="721" alt="image" src="https://github.com/user-attachments/assets/6e4ba086-b906-4c2f-b25e-19c38e410f33" />
+
+
+
+
 ### Result
 To Study of TDM pulse amplitude modulation/ demodulation with transmitter block (clock) and channel identification information linked directly to the receivers is verified.
 
